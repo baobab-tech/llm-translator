@@ -1,0 +1,26 @@
+{
+  "dependencies": {
+    "@langchain/openai": "^0.0.25",
+    "dotenv": "^16.4.5",
+    "he": "^1.2.0",
+    "inquirer": "^9.2.17",
+    "path": "^0.12.7",
+    "pdfjs-dist": "^4.0.379",
+    "typescript": "^5.4.3"
+  },
+  "devDependencies": {
+    "@tsconfig/node18": "^18.2.4",
+    "@types/node": "^20.12.2"
+  },
+  "name": "tmx-generator",
+  "version": "0.0.1",
+  "description": "A TMX Generator using source data and AI",
+  "main": "index.ts",
+  "type": "module",
+  "repository": "git@github.com:baobab-tech/tmx-generator.git",
+  "author": "Olivier <olivier@millsit.ca>",
+  "license": "MIT",
+  "scripts": {
+    "tmx": "npx tsx tmx-generator/index.ts"
+  }
+}
