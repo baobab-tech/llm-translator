@@ -1,5 +1,6 @@
 /**
  * Make sure to only get the JSON object from the string from a LLM completion
+ * @TODO: Yeah I know LangChain and Llamaindex both have output parsers, need to use that.
  * @param input string
  * @returns JSON Object or Array
  */

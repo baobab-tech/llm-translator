@@ -15,14 +15,14 @@
  * Pair of files that have source and target
  * named e.g. [name]_en.pdf [name]_fr.pdf
  */
-const PAIRS_DIR = process.env.PAIRS_DIR || "data/tmx/pairs";
+const PAIRS_DIR = process.env.PAIRS_DIR || "data/input/pairs";
 /**
  * Single files of target language
  * to be used with a decent enough target->source LLM translator
  * to generate pair phrases
  *
  */
-const SINGLES_DIR = process.env.SINGLES_DIR || "data/tmx/singles";
+const SINGLES_DIR = process.env.SINGLES_DIR || "data/input/singles";
 /**
  * 
  */
