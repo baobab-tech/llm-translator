@@ -24,6 +24,33 @@ Each tool is in its own folder and most are command-line interactive tools.
 1. [TMX Generator](./tmx-generator) - Generates TMX files and/or a CSV for a upload
 2. ... more coming soon
 
+## Setup
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/baobab-tech/llm-translator.git
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   yarn install
+   ```
+
+3. Setup up and using LLMs
+   
+   The TMX generator relies on a decent enough LLM to run basic phrase matching for the "pairs" method and good basic translation of <target> to english for the "singles" method. So the LLM needs to be able to understand the <target> language to translate it to english.
+
+4. Add your .env file:
+
+    ```bash
+    OPEN_AI_KEY = your-openai-key
+    TMX_INPUT_PAIRS_DIR = data/input/pairs
+    TMX_INPUT_SINGLES_DIR = data/input/singles
+    TMX_OUTPUT_DIR = data/output
+    ```
+
 ### Why typescript
 
 Why not? Python can go rest a bit.

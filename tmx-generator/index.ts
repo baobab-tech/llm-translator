@@ -15,14 +15,15 @@
  * Pair of files that have source and target
  * named e.g. [name]_en.pdf [name]_fr.pdf
  */
-const PAIRS_DIR = process.env.PAIRS_DIR || "data/input/pairs";
+const PAIRS_DIR = process.env.TMX_INPUT_PAIRS_DIR || "data/input/pairs";
 /**
  * Single files of target language
  * to be used with a decent enough target->source LLM translator
  * to generate pair phrases
  *
  */
-const SINGLES_DIR = process.env.SINGLES_DIR || "data/input/singles";
+const SINGLES_DIR = process.env.TMX_INPUT_SINGLES_DIR || "data/input/singles";
+const OUTPUT_DIR = process.env.TMX_OUTPUT_DIR || "data/output";
 /**
  * 
  */
@@ -144,7 +145,7 @@ async function processPairs(pairFiles: PairFile[], language: string) {
         </body>
       </tmx>`;
 
-    await fs.promises.writeFile(`${PAIRS_DIR}/${name}.tmx`, tmxContent);
+    await fs.promises.writeFile(`${OUTPUT_DIR}/${name}.tmx`, tmxContent);
   }
 }
 

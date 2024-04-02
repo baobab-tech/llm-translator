@@ -28,34 +28,10 @@ Depending on which LLM you use,
 - Node.js
 - TypeScript
 
-## Setup
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/baobab-tech/llm-translator.git
-   ```
-
-2. Install dependencies:
-
-   ```bash
-   yarn install
-   ```
-
-3. Setup up and using LLMs
-   
-   This TMX generator relies on a decent enough LLM to run basic phrase matching for the "pairs" method and good basic translation of <target> to english for the "singles" method. So the LLM needs to be able to understand the <target> language to translate it to english.
-
-4. Add your .env file:
-
-    ```bash
-    OPEN_AI_KEY=<your-openai-key>
-    PAIRS_DIR=data/input/pairs
-    SINGLES_DIR=data/input/singles
-    OUTPUT_DIR=data/output
-    ```
 
 ## Usage
+
+Setup per [README.md](../README.md#-setup)
 
 1. Place your PDFs in the appropriate directories:
    - For pairs: `data/input/pairs/[name]_en.pdf` and `data/input/pairs/[name]_fr.pdf`
