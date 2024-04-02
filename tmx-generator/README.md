@@ -92,4 +92,3 @@ Depending on which LLM you use,
 ---
 
 For more information on TMX and its uses in translation and localization, visit [Translation Memory eXchange (TMX)](https://en.wikipedia.org/wiki/Translation_Memory_eXchange).
-```

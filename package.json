@@ -19,7 +19,7 @@
   "type": "module",
   "repository": "git@github.com:baobab-tech/tmx-generator.git",
   "author": "Olivier <olivier@millsit.ca>",
-  "license": "MIT",
+  "license": "CC-BY-4.0",
   "scripts": {
     "tmx": "npx tsx tmx-generator/index.ts"
   }
