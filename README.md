@@ -73,4 +73,4 @@ We welcome contributions to improve this project. Please follow these steps to c
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE.md file for details.
+This project is licensed under the CC-BY License - see the LICENSE file for details.

@@ -31,7 +31,7 @@ Depending on which LLM you use,
 
 ## Usage
 
-Setup per [README.md](../README.md#-setup)
+Setup per [README.md](../README.md#setup)
 
 1. Place your PDFs in the appropriate directories:
    - For pairs: `data/input/pairs/[name]_en.pdf` and `data/input/pairs/[name]_fr.pdf`
