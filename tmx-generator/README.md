@@ -62,6 +62,18 @@ Depending on which LLM you use,
    ⚠️ Make sure the pairs have the same exact name with language code endings
    - For single files: `data/input/singles/[name]_[language].pdf`
 
+   You can change the folder paths in your `.env` file
+
+   Example folders:
+   ```bash
+   /tmx-generator
+     |__data
+          |__input
+              |__pairs
+                  |__ document_en.pdf
+                  |__ document_fr.pdf
+   ```
+   
 2. Run the script (it runs `npx tsx index.ts`)
 
    ```bash
@@ -76,19 +88,6 @@ Depending on which LLM you use,
 2. Support other than english as the base language
 3. Add support for other translation engines (e.g., Google Translate) for the "singles" method
 
-## Contributing
-
-We welcome contributions to improve this project. Please follow these steps to contribute:
-
-1. Fork the repository.
-2. Create a new branch for your feature (`git checkout -b feature/AmazingFeature`).
-3. Commit your changes (`git commit -am 'Add some AmazingFeature'`).
-4. Push to the branch (`git push origin feature/AmazingFeature`).
-5. Open a Pull Request.
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE.md file for details.
 
 ---
 
