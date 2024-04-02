@@ -83,10 +83,26 @@ async function readSingleFiles(): Promise<SingleFiles> {
 }
 
 async function processPairs(pairFiles: PairFile[], language: string) {
-  // console.log(`\nProcessing ${pairFiles.length} pairs...`);
+  console.log(`Processing ${pairFiles.length} pairs...`);
   for (const { name, languages } of pairFiles) {
     if (!languages.includes(language)) {
       console.log(`No ${language} translation found for ${name}, skipping`);
+      continue;
+    }
+    console.log(`Processing ${name}... for ${language}`);
+
+    // if the tmx with the same name exists then warn and skip
+    const tmxPath = `${OUTPUT_DIR}/${name}.tmx`;
+    if (await fs.existsSync(tmxPath)) {
+      console.log(`TMX for ${name} already exists`);
+      const { override } = await inquirer.prompt([
+        {
+          type: "confirm",
+          name: "override",
+          message: `Override existing TMX?`,
+          default: false,
+        },
+      ]);
       continue;
     }
 
@@ -119,6 +135,9 @@ async function processPairs(pairFiles: PairFile[], language: string) {
         .replace("{sample}", sampleTranslation)
         .replace("{count}", count.toString());
       phrasePrompt = `${phrasePrompt}<ENGLISH>${enPage}</ENGLISH><TARGET>${targetPage}</TARGET>`;
+
+      console.log("Sending to LLM for phrase matching...");
+
       const gptExtractedPairString = (await getDataUsingGPT(phrasePrompt, false)) as string;
       gptExtractedPairString.split("\n").map((pair: string) => {
         const [source, target] = pair.split("==");
