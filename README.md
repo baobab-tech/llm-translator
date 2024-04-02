@@ -1,4 +1,4 @@
-<img src="https://i.postimg.cc/Njn6by2Z/logo.png" width="200" />
+<img src="https://i.postimg.cc/fRVmrxXD/logo.png" width="200" />
 
 # LLM Translator
 
