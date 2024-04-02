@@ -1,6 +1,7 @@
 ####
 # all the files for tmx generation
 data/*
+tmx-generator/data/*
 
 ####
 # Logs
