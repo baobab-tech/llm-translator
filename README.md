@@ -18,11 +18,14 @@ And [read all the research](RESEARCH.md)
 ## Usage
 
 Each tool is in its own folder and most are command-line interactive tools.
+Make sure to run `yarn install` to have libraries installed.
 
 ### Tools
 
-1. [TMX Generator](./tmx-generator) - Generates TMX files and/or a CSV for a upload
-2. ... more coming soon
+1. [TMX Generator](./tmx-generator) - Generates TMX files for us with translations or the upcomgin TMC Vector/Hybrid Database
+2. [docx xlsx pptx Translator](./xliff) - Generates XLIFF files then translates them using LLM translation
+3. [LLM Translator] - The main translator tool using a mix of LLMs and the concept of TMX Vector/Hybrid Databases
+3. ... more coming soon
 
 ## Setup
 
