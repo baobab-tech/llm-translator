@@ -6,7 +6,7 @@ This is a toolkit for LLM translation.
 
 ## What is LLM translation?
 
-It's evolving from the old MNT's (Machine Neural Translator models) to using Large Language Models (LLM) as the translator.
+It's evolving from the old NMT's (Neural Machine Translator models) to using Large Language Models (LLM) as the translator.
 
 ## Why?
 
