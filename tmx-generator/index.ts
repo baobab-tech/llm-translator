@@ -33,8 +33,8 @@ import fs from "fs";
 import path from "path";
 import inquirer from "inquirer";
 import { PageText, getTextFromPdf } from "@/lib/parsers/pdf/pdfjs.js";
-import { getDataUsingGPT } from "@/lib/ai/gptGetData.js";
-import { SingleSourceTranslatorPrompt, TranslationPhraseGeneratorPrompt } from "@/lib/prompts.js";
+import { gpt } from "@/lib/ai/gpt.js";
+import { SingleSourceTranslatorPrompt, TranslationPhraseGeneratorPrompt } from "@/tmx-generator/lib/prompts.js";
 import he from "he";
 import { IloveWater } from "@/lib/mapper.js"
 
@@ -138,7 +138,7 @@ async function processPairs(pairFiles: PairFile[], language: string) {
 
       console.log("Sending to LLM for phrase matching...");
 
-      const gptExtractedPairString = (await getDataUsingGPT(phrasePrompt, false)) as string;
+      const gptExtractedPairString = (await gpt({prompt: phrasePrompt, formatJson: false})) as string;
       gptExtractedPairString.split("\n").map((pair: string) => {
         const [source, target] = pair.split("==");
         console.log(source, target);
@@ -178,9 +178,8 @@ async function processSingles(singleFiles: SingleFiles, language: string) {
     }
 
     const translationPrompt = SingleSourceTranslatorPrompt.replace("{language}", language);
-    const baseTranslation = await getDataUsingGPT<string>(
-      translationPrompt + "\n\n" + pdfText.text,
-      false
+    const baseTranslation = await gpt<string>(
+      { prompt: translationPrompt + "\n\n" + pdfText.text, formatJson: false },
     );
 
     const sampleTranslation = IloveWater[language];
@@ -195,7 +194,7 @@ async function processSingles(singleFiles: SingleFiles, language: string) {
 
     for (let i = 0; i < words.length; i += 500) {
       const chunk = words.slice(i, i + 500).join(" ");
-      const generatedPhrases = await getDataUsingGPT<string>(phrasePrompt + "\n\n" + chunk, false);
+      const generatedPhrases = await gpt<string>({ prompt: phrasePrompt + "\n\n" + chunk, formatJson: false});
       tmxUnits = tmxUnits.concat(generatedPhrases.split("\n"));
     }
 

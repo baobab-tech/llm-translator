@@ -3,6 +3,13 @@
 data/*
 tmx-generator/data/*
 
+#####
+# For XLIFF and local Java run
+xliff/data/*
+# the tikal converter (everything from unzipped: https://okapiframework.org/binaries/main/1.46.0/okapi-lib_all-platforms_1.46.0.zip)
+xliff/tikal/*
+
+
 ####
 # Logs
 logs
