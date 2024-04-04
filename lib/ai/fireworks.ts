@@ -1,13 +1,6 @@
 import { ChatFireworks } from "@langchain/community/chat_models/fireworks";
 import { genericLLMCall } from "./generic.js";
 
-
-const model = new ChatFireworks({
-  temperature: 0.3,
-  // In Node.js defaults to process.env.FIREWORKS_API_KEY
-  fireworksApiKey: process.env.FIREWORKS_API_KEY,
-});
-
 const FW_MODEL_MAP = {
     "h2mixtral": "accounts/fireworks/models/nous-hermes-2-mixtral-8x7b-dpo-fp8",
     "mixtral": "accounts/fireworks/models/mixtral-8x7b-instruct",
