@@ -8,7 +8,15 @@
  */
 
 import { customAlphabet } from 'nanoid'
-const nanoid = customAlphabet('123456789abcdefghijklmnopqrst', 4)
+const nanoid = customAlphabet('123456789abcdef', 4)
+
+/**
+ * !!!!
+ * Different LLMs are sensitive to different brackets
+ *  gpt3.5 likes < > or [[ ]]
+ *  command-r likes 【 】 but hates < > 
+ */
+export const PLACEHOLDER_BRACKETS = ["【", "】"] // ["【", "】"];
 
 
 interface TagMapping {
@@ -68,7 +76,7 @@ export function replaceTagsAndStoreMappings(
       if (endMatch) {
         const endIndex = endMatch.index + endMatch[0].length;
         const tagContent = outputText.substring(startIndex, endIndex);
-        const placeholder = `<${nanoid()}>` //`[[${counter++}]]`;
+        const placeholder = `${PLACEHOLDER_BRACKETS[0]}${nanoid()}${PLACEHOLDER_BRACKETS[1]}` //`[[${counter++}]]`;
         tagMappings[placeholder] = tagContent;
 
         // Replace the original tag content with the placeholder in the output text
@@ -101,10 +109,10 @@ export function replaceTagsAndStoreMappings(
  * @example
  * const outputText = `Mind Tools (2022). {1}SWOT Analysis{2}: {3}Understanding Your Business, Informing Your Strategy. {4}`;
  * const tagMappings: TagMapping = {
- *   "{1}": `<bpt id="1">&lt;run1></bpt>`,
- *   "{2}": `<ept id="1">&lt;/run1></ept>`,
- *   "{3}": `<bpt id="3">&lt;run3></bpt>`,
- *   "{4}": `<ept id="3">&lt;/run3></ept>`,
+ *   "[af29]": `<bpt id="1">&lt;run1></bpt>`,
+ *   "[2ed1]": `<ept id="1">&lt;/run1></ept>`,
+ *   "[ec31]": `<bpt id="3">&lt;run3></bpt>`,
+ *   "[da45]": `<ept id="3">&lt;/run3></ept>`,
  * };
  * const refilledText = refillTextWithOriginalTags(outputText, tagMappings);
  * console.log(refilledText);

@@ -14,7 +14,8 @@ import { extractPhrases, mergePhrasesBack } from "./lib/extractPhrases.js";
 import { translateBatchXliffPhrases } from "./lib/translateBatchPhrases.js";
 
 const DATA_FOLDER = process.env.XLIFF_DATA_FOLDER || "xliff/data";
-const SUFFIX = process.env.XLIFF_SUFFIX || "__llm_gpt3"; // for the translated file post merge
+const LLM = process.env.LLM || "gpt3.5";
+const SUFFIX = process.env.XLIFF_SUFFIX || `__llm_${LLM.replace(".","")}`; // for the translated file post merge
 
 
 const ACCEPTED_FORMATS_EXT = [".docx", ".xlsx", ".pptx", ".html"];
@@ -88,6 +89,13 @@ async function main() {
   ]);
 
   if (operation === "generate") {
+    /**
+     * 
+     *  Generate XLIFF from .docx, .xlsx, .pptx
+     * 
+     * 
+     * 
+     */
     const command = `xliff/tikal/tikal.sh -x ${DATA_FOLDER}/${selectedFile} -sl en -tl ${language} -nocopy`;
     console.log(`Running`, command);
     console.log(`Generating XLIFF for ${selectedFile}`);
@@ -97,6 +105,13 @@ async function main() {
       `Location: ${DATA_FOLDER}/${selectedFile}.xlf`
     );
   } else if (operation === "translate") {
+     /**
+     * 
+     * Translate an XLIFF file 
+     * 
+     * 
+     * 
+     */
     console.log(`Translating ${selectedFile}`);
     const docString = await fs.promises.readFile(
       `${DATA_FOLDER}/${selectedFile}`,
@@ -122,7 +137,13 @@ async function main() {
       `Location: ${DATA_FOLDER}/${selectedFile}`
     );
   } else if (operation === "merge") {
-    
+     /**
+     * 
+     *  Merge the translaton back into a .docx...
+     * 
+     * 
+     * 
+     */
     const command = `xliff/tikal/tikal.sh -m ${DATA_FOLDER}/${selectedFile} -sl en -tl ${language}`;
     console.log(`Running`, command);
     console.log(`Generating XLIFF for ${selectedFile}`);

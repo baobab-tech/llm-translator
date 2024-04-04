@@ -1,21 +1,38 @@
-import { translateWithGPT } from "@/llm-translate/lib/gpt.js";
 import { ExtractedPhrase } from "./extractPhrases.js";
 import { TranslateXLIFFPhrasePrompt } from "@/xliff/lib/prompts.js";
-import { refillTextWithOriginalTags } from "./phrasePrepare.js";
+import {
+  PLACEHOLDER_BRACKETS,
+  refillTextWithOriginalTags,
+} from "./phrasePrepare.js";
 import _ from "lodash";
 import "dotenv/config";
+import { translateWithLLM } from "@/llm-translate/lib/translateWithLLM.js";
 /**
  * We are setting a sensible length of a batch of phrases to be translated at once
  * keeping in ming too many lines (phrases) will make the llm mess up and also
  * too long of a text will make it mess up too
  * so we stop at what ever comes first either the number of characters or the number of phrases
  */
-const BATCH_SIZE_CHARS = 800;
+const BATCH_SIZE_CHARS = 700;
 const BATCH_SIZE_PHRASES = 8;
 const AI_TRANSLATION_MODE = process.env.AI_TRANSLATION_MODE || "off";
 //=================
+/**
+ * Sensitive is also the placeholeder brackets
+ */
+// see phrasePrepare where they are set PLACEHOLDER_BRACKETS
+//================
 
-export const translateBatchXliffPhrases = async (phrases, language) => {
+/**
+ * Translates a batch of phrases from XLIFF using the LLM
+ * @param {ExtractedPhrase[]} phrases  - phrases to be translated
+ * @param {string} language  -
+ * @returns {ExtractedPhrase[]}
+ */
+export const translateBatchXliffPhrases = async (
+  phrases: ExtractedPhrase[],
+  language: string
+) => {
   const batchedPhrases: ExtractedPhrase[][] = [];
   let currentBatch: ExtractedPhrase[] = [];
   let currentCharsCount = 0;
@@ -56,12 +73,17 @@ export const translateBatchXliffPhrases = async (phrases, language) => {
     let translatedBatchText =
       AI_TRANSLATION_MODE == "off"
         ? batchPhrasesText
-        : await translateWithGPT(
+        : await translateWithLLM(
             batchPhrasesText,
             language,
-            TranslateXLIFFPhrasePrompt
+            // use the prompt that focuses on placeholders or not
+            TranslateXLIFFPhrasePrompt[
+              batchPhrasesText.includes(PLACEHOLDER_BRACKETS[0]) ? "yes" : "no"
+            ]
           );
     // Do a sanity check there should be same number of phrases as batch
+    // first remove any blank lines from the translated text
+    translatedBatchText = translatedBatchText.replace(/^\s*[\r\n]/gm, "");
     if (
       translatedBatchText.split("\n").length !=
       batchPhrasesText.split("\n").length
@@ -76,8 +98,8 @@ export const translateBatchXliffPhrases = async (phrases, language) => {
     }
     // Sanity check that there are the same amount of [[id]]
     if (
-      translatedBatchText.split("[[").length !=
-      batchPhrasesText.split("[[").length
+      translatedBatchText.split(PLACEHOLDER_BRACKETS[0]).length !=
+      batchPhrasesText.split(PLACEHOLDER_BRACKETS[0]).length
     ) {
       console.error(
         "** Error: translation PLACEHOLDER count does not match",
