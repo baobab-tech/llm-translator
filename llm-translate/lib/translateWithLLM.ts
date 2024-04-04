@@ -7,6 +7,7 @@ import { cohere } from "@/lib/ai/cohere.js";
 import { fireworks } from "@/lib/ai/fireworks.js";
 
 import { languageMap } from "@/lib/mapper.js";
+import { claude } from "@/lib/ai/anthropic";
 
 /**
  * set the function to use (which LLM) 
@@ -18,6 +19,8 @@ const LLMTRanslatorFunction = {
   'command-r': cohere,
   'h2mixtral': fireworks('h2mixtral'),
   'mixtral': fireworks('mixtral'),
+  'haiku': claude('haiku'),
+  'sonnet': claude('sonnet'),
 }
 
 export const translateWithLLM = async (text, language, systemPrompt = "") => {
