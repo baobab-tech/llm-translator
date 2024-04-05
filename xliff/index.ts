@@ -9,9 +9,9 @@ import fs from "fs";
 import inquirer from "inquirer";
 import { exec } from "child_process";
 import _ from "lodash";
-import { parseXLIFFContent, createXLIFFContent } from "./lib/parseXliff.js";
-import { extractPhrases, mergePhrasesBack } from "./lib/extractPhrases.js";
-import { translateBatchXliffPhrases } from "./lib/translateBatchPhrases.js";
+import { parseXLIFFContent, createXLIFFContent } from "./lib/parseXliff";
+import { extractPhrases, mergePhrasesBack } from "./lib/extractPhrases";
+import { translateBatchXliffPhrases } from "./lib/translateBatchPhrases";
 
 const DATA_FOLDER = process.env.XLIFF_DATA_FOLDER || "xliff/data";
 const LLM = process.env.LLM || "gpt3.5";
@@ -50,6 +50,10 @@ async function main() {
       choices: operationChoices,
     },
   ]);
+
+  if(operation === "translate") {
+    console.log(`** NOTE: Using ${LLM} as the LLM for translation. Costs will be encured. **`);
+  }
 
   const { language } = await inquirer.prompt([
     {
