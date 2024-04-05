@@ -62,7 +62,11 @@ You can pick the LLM by setting the environment variable in `.env`
 LLM="gpt3.5"
 ```
 
-Here is the list of options: `gpt3.5`, `haiku`, `sonnet`, `mixtral`, `h2mixtral`
+Here is the list of options: 
+- OpenAI: `gpt3.5`, 
+- Anthropic/Claude-3: `haiku`, `sonnet`, 
+- Cohere: `command-r`, 
+- Open models: `mixtral`, `h2mixtral` (served by Fireworks AI)
 
 ### Why typescript
 
