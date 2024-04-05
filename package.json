@@ -5,6 +5,7 @@
     "@langchain/community": "^0.0.44",
     "@langchain/core": "^0.1.52",
     "@langchain/openai": "^0.0.25",
+    "@qdrant/js-client-rest": "^1.8.1",
     "dotenv": "^16.4.5",
     "he": "^1.2.0",
     "inquirer": "^9.2.17",
