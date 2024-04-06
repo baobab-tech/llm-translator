@@ -16,7 +16,8 @@ const LLM = process.env.LLM || "gpt3.5"
 
 const LLMTRanslatorFunction = {
   'gpt3.5': gpt,
-  'command-r': cohere,
+  'cmdr': cohere('cmdr'),
+  'cmdrplus': cohere('cmdrplus'),
   'h2mixtral': fireworks('h2mixtral'),
   'mixtral': fireworks('mixtral'),
   'haiku': claude('haiku'),
