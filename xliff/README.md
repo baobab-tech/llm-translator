@@ -11,9 +11,10 @@ This toolset allows for extracting, translating and merging XLIFF files (ie tran
 ## Usage
 
 Run the following command to run the command line tool which you can interact with.
-It uses GPT-3.5-turbo to do translations of the XLIFF files without any context injection so the quality might be limited.
+It uses a choise of LLMs to do translations of the XLIFF files without any context (sample translations from TMX) injection so the quality might be limited.
 Make sure to have `tikal` see below.
 
+Set and see list of LLMs in the `.env`
 
 ```bash
 yarn run xliff
@@ -22,7 +23,7 @@ yarn run xliff
 ## Limitations
 - One documet at a time
 - Uses english as the base language (has to be for now)
-- Uses single-shot GPT-3.5 translations (working on LLM Translate and will update here)
+- Uses single-shot LLM translations (working on LLM Translate and will update here)
 - Requires local copy of Tikal (java) to do XLIFF extraction and merging. (see below)
 
 
