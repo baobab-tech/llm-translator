@@ -1,5 +1,5 @@
 import { ChatAnthropic } from "@langchain/anthropic";
-import { genericLLMCall } from "./generic.js";
+import { genericLLMCall } from "./generic";
 
 const CLAUDE_MODEL_MAP = {
   haiku: "claude-3-haiku-20240307",

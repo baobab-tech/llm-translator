@@ -2,11 +2,11 @@
  * Translate using GPT-3.5
  */
 
-import { gpt } from "@/lib/ai/gpt.js";
-import { cohere } from "@/lib/ai/cohere.js";
-import { fireworks } from "@/lib/ai/fireworks.js";
+import { gpt } from "@/lib/ai/gpt";
+import { cohere } from "@/lib/ai/cohere";
+import { fireworks } from "@/lib/ai/fireworks";
 
-import { languageMap } from "@/lib/mapper.js";
+import { languageMap } from "@/lib/mapper";
 import { claude } from "@/lib/ai/anthropic";
 
 /**

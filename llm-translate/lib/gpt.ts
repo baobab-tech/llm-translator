@@ -2,8 +2,8 @@
  * Translate using GPT-3.5
  */
 
-import { gpt } from "@/lib/ai/gpt.js";
-import { languageMap } from "@/lib/mapper.js";
+import { gpt } from "@/lib/ai/gpt";
+import { languageMap } from "@/lib/mapper";
 
 export const translateWithGPT = async (text, language, systemPrompt = "") => {
   return gpt<string>({

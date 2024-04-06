@@ -1,7 +1,7 @@
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 
 import "dotenv/config";
-import { parseJSONFromString } from "./parseJson.js";
+import { parseJSONFromString } from "./parseJson";
 
 export const genericLLMCall = async <T>(chatModel, {
   prompt,

@@ -1,5 +1,5 @@
 import { ChatCohere } from "@langchain/cohere";
-import { genericLLMCall } from "./generic.js";
+import { genericLLMCall } from "./generic";
 
 export const cohere = async (data) => {
   const chatModel = new ChatCohere({

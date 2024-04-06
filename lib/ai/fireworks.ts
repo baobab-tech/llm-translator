@@ -1,5 +1,5 @@
 import { ChatFireworks } from "@langchain/community/chat_models/fireworks";
-import { genericLLMCall } from "./generic.js";
+import { genericLLMCall } from "./generic";
 
 const FW_MODEL_MAP = {
     "h2mixtral": "accounts/fireworks/models/nous-hermes-2-mixtral-8x7b-dpo-fp8",

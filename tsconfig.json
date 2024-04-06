@@ -1,34 +1,35 @@
 {
   // This is an alias to @tsconfig/node16: https://github.com/tsconfig/bases
-  "extends": "@tsconfig/node18/tsconfig.json",
+  // "extends": "@tsconfig/node18/tsconfig.json",
 
   // Most ts-node options can be specified here using their programmatic names.
-  "ts-node": {
-    // It is faster to skip typechecking.
-    // Remove if you want ts-node to do typechecking.
-    "transpileOnly": true,
+  // "ts-node": {
+  //   // It is faster to skip typechecking.
+  //   // Remove if you want ts-node to do typechecking.
+  //   "transpileOnly": true,
 
-    "files": true,
+  //   "files": true,
 
-    "compilerOptions": {
-      // compilerOptions specified here will override those declared below,
-      // but *only* in ts-node.  Useful if you want ts-node and tsc to use
-      // different options with a single tsconfig.json.
-      "module": "NodeNext",
-      "esModuleInterop": true,
-      "resolveJsonModule": true
-    },
-    "esm": true // <--- this is the most important part
-  },
+  //   "compilerOptions": {
+  //     // compilerOptions specified here will override those declared below,
+  //     // but *only* in ts-node.  Useful if you want ts-node and tsc to use
+  //     // different options with a single tsconfig.json.
+  //     "module": "NodeNext",
+  //     "esModuleInterop": true,
+  //     "resolveJsonModule": true
+  //   },
+  //   "esm": true // <--- this is the most important part
+  // },
   "compilerOptions": {
     "noImplicitAny": false,
-    "baseUrl": "./",
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./*"]
-    }
+    },
     // typescript options here
-    // "module": "esnext",
-    // "target": "es2020",
-    // "moduleResolution": "node"
+    "module": "CommonJS",
+    "target": "es2020",
+    "allowSyntheticDefaultImports": true,
+    // "moduleResolution": "NodeNext"
   }
 }

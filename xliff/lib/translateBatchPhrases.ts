@@ -3,10 +3,10 @@ import { TranslateXLIFFPhrasePrompt } from "@/xliff/lib/prompts.js";
 import {
   PLACEHOLDER_BRACKETS,
   refillTextWithOriginalTags,
-} from "./phrasePrepare.js";
+} from "./phrasePrepare";
 import _ from "lodash";
 import "dotenv/config";
-import { translateWithLLM } from "@/llm-translate/lib/translateWithLLM.js";
+import { translateWithLLM } from "@/llm-translate/lib/translateWithLLM";
 /**
  * We are setting a sensible length of a batch of phrases to be translated at once
  * keeping in ming too many lines (phrases) will make the llm mess up and also

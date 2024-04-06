@@ -1,4 +1,4 @@
-import { PLACEHOLDER_BRACKETS } from "@/xliff/lib/phrasePrepare.js";
+import { PLACEHOLDER_BRACKETS } from "@/xliff/lib/phrasePrepare";
 const L = PLACEHOLDER_BRACKETS[0];
 const R = PLACEHOLDER_BRACKETS[1];
 
