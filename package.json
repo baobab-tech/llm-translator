@@ -5,6 +5,7 @@
     "@langchain/community": "^0.0.44",
     "@langchain/core": "^0.1.52",
     "@langchain/openai": "^0.0.25",
+    "@qdrant/js-client-rest": "^1.8.1",
     "dotenv": "^16.4.5",
     "he": "^1.2.0",
     "inquirer": "^9.2.17",
@@ -17,6 +18,7 @@
   },
   "devDependencies": {
     "@tsconfig/node18": "^18.2.4",
+    "@types/lodash": "^4.17.0",
     "@types/node": "^20.12.2"
   },
   "name": "tmx-generator",

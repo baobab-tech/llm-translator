@@ -1,6 +1,6 @@
 import fs from "fs";
 import { Metadata } from "pdfjs-dist/types/src/display/metadata.js";
-
+import { getDocument } from "pdfjs-dist";
 const PDF_DEFAULT_OPTIONS = {
   max: 0,
 };
@@ -30,14 +30,21 @@ export type PDFTextReturnType<IsPageByPage extends boolean> = {
 
 export const getTextFromPdf = async <T extends boolean>(
   file: string,
-  { pageByPage = false, maxPages = 0 }: { pageByPage?: boolean; maxPages?: number }
+  {
+    pageByPage = false,
+    maxPages = 0,
+  }: { pageByPage?: boolean; maxPages?: number }
 ): Promise<PDFTextReturnType<T> | null> => {
   const content = fs.readFileSync(file) as any;
   if (!(content instanceof Buffer)) {
     console.warn(`PDF File ${file} can only be loaded using the Node FS`);
     return null;
   }
-  const data = new Uint8Array(content.buffer, content.byteOffset, content.byteLength);
+  const data = new Uint8Array(
+    content.buffer,
+    content.byteOffset,
+    content.byteLength
+  );
   const pdf = await readPDF(data, { max: maxPages }, pageByPage);
   return pdf;
 };
@@ -86,14 +93,14 @@ export async function readPDF<T extends boolean>(
   options = PDF_DEFAULT_OPTIONS,
   pageByPage: boolean
 ): Promise<PDFTextReturnType<T> | null> {
-  const { getDocument } = await import("pdfjs-dist");
+  // const { getDocument } = await import("pdfjs-dist");
 
   const pdfData = data instanceof Buffer ? new Uint8Array(data) : data;
 
-
   const doc = await getDocument({ data: pdfData }).promise;
   const metaData = await doc.getMetadata().catch(() => null);
-  const counter = options.max === 0 ? doc.numPages : Math.min(options.max, doc.numPages);
+  const counter =
+    options.max === 0 ? doc.numPages : Math.min(options.max, doc.numPages);
 
   let text = pageByPage ? [] : "";
 

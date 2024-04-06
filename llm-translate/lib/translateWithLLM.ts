@@ -2,11 +2,11 @@
  * Translate using GPT-3.5
  */
 
-import { gpt } from "@/lib/ai/gpt.js";
-import { cohere } from "@/lib/ai/cohere.js";
-import { fireworks } from "@/lib/ai/fireworks.js";
+import { gpt } from "@/lib/ai/gpt";
+import { cohere } from "@/lib/ai/cohere";
+import { fireworks } from "@/lib/ai/fireworks";
 
-import { languageMap } from "@/lib/mapper.js";
+import { languageMap } from "@/lib/mapper";
 import { claude } from "@/lib/ai/anthropic";
 
 /**
@@ -16,7 +16,8 @@ const LLM = process.env.LLM || "gpt3.5"
 
 const LLMTRanslatorFunction = {
   'gpt3.5': gpt,
-  'command-r': cohere,
+  'cmdr': cohere('cmdr'),
+  'cmdrplus': cohere('cmdrplus'),
   'h2mixtral': fireworks('h2mixtral'),
   'mixtral': fireworks('mixtral'),
   'haiku': claude('haiku'),

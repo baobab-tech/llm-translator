@@ -1,8 +1,8 @@
-import { ParsedXliff, parseXLIFFContent } from "./parseXliff.js";
+import { ParsedXliff, parseXLIFFContent } from "./parseXliff";
 import {
   refillTextWithOriginalTags,
   replaceTagsAndStoreMappings,
-} from "./phrasePrepare.js";
+} from "./phrasePrepare";
 
 export type ExtractedPhrase = {
   namespace: string;
@@ -45,6 +45,7 @@ export const mergePhrasesBack = (
 ): ParsedXliff => {
   phrases.forEach((phrase) => {
     const { namespace, tuId, text, map } = phrase;
+    if (!text) return obj;
     const tu = obj[namespace].find((tu) => tu.id === tuId);
     if (!tu)
       throw new Error(`Cannot find tu ${tuId} in namespace ${namespace}`);

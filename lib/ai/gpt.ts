@@ -1,5 +1,5 @@
 import { ChatOpenAI } from "@langchain/openai";
-import { genericLLMCall } from "./generic.js";
+import { genericLLMCall } from "./generic";
 
 export const gpt = async <T>(data) => {
   const chatModel = new ChatOpenAI({

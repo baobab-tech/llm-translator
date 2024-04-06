@@ -32,9 +32,9 @@ const OUTPUT_DIR = process.env.TMX_OUTPUT_DIR || "tmx-generator/data/output";
 import fs from "fs";
 import path from "path";
 import inquirer from "inquirer";
-import { PageText, getTextFromPdf } from "@/lib/parsers/pdf/pdfjs.js";
-import { gpt } from "@/lib/ai/gpt.js";
-import { SingleSourceTranslatorPrompt, TranslationPhraseGeneratorPrompt } from "@/tmx-generator/lib/prompts.js";
+import { PageText, getTextFromPdf } from "@/lib/parsers/pdf/pdfjs";
+import { gpt } from "@/lib/ai/gpt";
+import { SingleSourceTranslatorPrompt, TranslationPhraseGeneratorPrompt } from "@/tmx-generator/lib/prompts";
 import he from "he";
 import { IloveWater } from "@/lib/mapper.js"
 
