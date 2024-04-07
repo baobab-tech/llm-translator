@@ -13,13 +13,17 @@ export const folderBatch = async (language, folder) => {
   );
 
   for (const file of filesToProcess) {
+    // escape chars in file 
+    let fileEscaped = file.replace(/[\\/:*?"<>|]/g, "").replace(/ /g, "_");
+    // rename file
+    await fs.promises.rename(`${folder}/${file}`, `${folder}/${fileEscaped}`);
     try {
-      await generateXliff(file,folder, language); // Assumes generate function returns processed data
-      await translateXliff(`${file}.xlf`,folder, language); // Assumes translate function returns processed data
-      await mergeXliff(`${file}.xlf`,folder, language); // Assumes merge function integrates translated data back
-      console.log(`Successfully processed ${file}`);
+      await generateXliff(fileEscaped,folder, language); // Assumes generate function returns processed data
+      await translateXliff(`${fileEscaped}.xlf`,folder, language); // Assumes translate function returns processed data
+      await mergeXliff(`${fileEscaped}.xlf`,folder, language); // Assumes merge function integrates translated data back
+      console.log(`Successfully processed ${fileEscaped}`);
     } catch (error) {
-      console.error(`Error processing ${file}: ${error}`);
+      console.error(`Error processing ${fileEscaped}: ${error}`);
     }
   }
 };

@@ -1,5 +1,5 @@
 import { ExtractedPhrase } from "./extractPhrases";
-import { TranslateXLIFFPhrasePrompt } from "@/xliff/lib/prompts";
+import { FixPlaceHolderCountPrompt, TranslateXLIFFPhrasePrompt, outputParsePlaceholderFix } from "@/xliff/lib/prompts";
 import {
   PLACEHOLDER_BRACKETS,
   refillTextWithOriginalTags,
@@ -7,6 +7,8 @@ import {
 import _ from "lodash";
 import "dotenv/config";
 import { translateWithLLM } from "@/llm-translate/lib/translateWithLLM";
+import { gpt } from "@/lib/ai/gpt";
+import { placeholderCountError } from "./sanity";
 /**
  * We are setting a sensible length of a batch of phrases to be translated at once
  * keeping in ming too many lines (phrases) will make the llm mess up and also
@@ -115,15 +117,28 @@ async function translationBatchTask(group, language) {
   }
   // Sanity check that there are the same amount of [[id]]
   if (
-    translatedBatchText.split(PLACEHOLDER_BRACKETS[0]).length !=
-    batchPhrasesText.split(PLACEHOLDER_BRACKETS[0]).length
+    placeholderCountError(translatedBatchText, batchPhrasesText)
   ) {
     console.error(
-      "** Error: translation PLACEHOLDER count does not match",
-      translatedBatchText,
-      batchPhrasesText
+      "** Error: translation PLACEHOLDER count does not match, trying to fix..."
+      // translatedBatchText,
+      // batchPhrasesText
     );
-    throw new Error("translation PLACEHOLDER count does not match");
+    // throw new Error("translation PLACEHOLDER count does not match");
+    // Lets try ask gpt to fix the placeholders
+    translatedBatchText = await gpt({prompt:FixPlaceHolderCountPrompt(batchPhrasesText, translatedBatchText)});
+    translatedBatchText = outputParsePlaceholderFix(translatedBatchText);
+    // console.log("** Fixed translated batch:", translatedBatchText);
+    if(!placeholderCountError(translatedBatchText, batchPhrasesText)) {
+      console.log("** Fixed PLACEHOLDER count matches");
+    } else {
+      console.error(
+        "** Error: translation PLACEHOLDER count does not match even after fixing, please check manually",
+        translatedBatchText,
+        batchPhrasesText
+      );
+      throw new Error("translation PLACEHOLDER count does not match even after fixing");
+    }
   }
 
   console.log(
