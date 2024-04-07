@@ -39,6 +39,13 @@ export const translateBatchXliffPhrases = async (
 
   for (const phrase of phrases) {
     // Check if adding the current phrase would exceed the limits
+    // but first check if this one phrase exceeds the limit on its own because if it does, we need to add it else it gets excluded
+    if (phrase.text.length > GROUP_SIZE_CHARS) {
+      currentGroup.push(phrase);
+      groupedPhrases.push(currentGroup);
+      currentCharsCount = 0;
+      continue;
+    }
     if (
       currentCharsCount + phrase.text.length > GROUP_SIZE_CHARS ||
       currentGroup.length == GROUP_SIZE_PHRASES
@@ -62,9 +69,7 @@ export const translateBatchXliffPhrases = async (
   for (let i = 0; i <= groupedPhrases.length - 1; i = i + 7) {
     let batch: any = groupedPhrases.slice(i, i + 7);
     // console.log(batch);
-    batch = batch.map(async (group) =>
-      translationBatchTask(group, language)
-    );
+    batch = batch.map(async (group) => translationBatchTask(group, language));
     let translatedBatch = await Promise.all(batch);
     // console.log("** Translated batch:", translatedBatch);
     translatedBatches.push(translatedBatch.flat());
@@ -115,7 +120,8 @@ async function translationBatchTask(group, language) {
   ) {
     console.error(
       "** Error: translation PLACEHOLDER count does not match",
-      translatedBatchText
+      translatedBatchText,
+      batchPhrasesText
     );
     throw new Error("translation PLACEHOLDER count does not match");
   }

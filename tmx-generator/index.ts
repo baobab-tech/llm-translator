@@ -15,17 +15,19 @@
  * Pair of files that have source and target
  * named e.g. [name]_en.pdf [name]_fr.pdf
  */
-const PAIRS_DIR = process.env.TMX_INPUT_PAIRS_DIR || "tmx-generator/data/input/pairs";
+const PAIRS_DIR =
+  process.env.TMX_INPUT_PAIRS_DIR || "tmx-generator/data/input/pairs";
 /**
  * Single files of target language
  * to be used with a decent enough target->source LLM translator
  * to generate pair phrases
  *
  */
-const SINGLES_DIR = process.env.TMX_INPUT_SINGLES_DIR || "tmx-generator/data/input/singles";
+const SINGLES_DIR =
+  process.env.TMX_INPUT_SINGLES_DIR || "tmx-generator/data/input/singles";
 const OUTPUT_DIR = process.env.TMX_OUTPUT_DIR || "tmx-generator/data/output";
 /**
- * 
+ *
  */
 //======================================================
 
@@ -34,9 +36,13 @@ import path from "path";
 import inquirer from "inquirer";
 import { PageText, getTextFromPdf } from "@/lib/parsers/pdf/pdfjs";
 import { gpt } from "@/lib/ai/gpt";
-import { SingleSourceTranslatorPrompt, TranslationPhraseGeneratorPrompt } from "@/tmx-generator/lib/prompts";
+import {
+  SingleSourceTranslatorPrompt,
+  TranslationPhraseGeneratorPrompt,
+} from "@/tmx-generator/lib/prompts";
 import he from "he";
-import { IloveWater } from "@/lib/mapper.js"
+import { IloveWater } from "@/lib/mapper.js";
+import { createTUString, createTmxContentString } from "./lib/createTmxString";
 
 interface PairFile {
   name: string;
@@ -106,10 +112,15 @@ async function processPairs(pairFiles: PairFile[], language: string) {
       continue;
     }
 
-    const enPdfText = await getTextFromPdf(`${PAIRS_DIR}/${name}_en.pdf`, { pageByPage: true });
-    const targetPdfText = await getTextFromPdf(`${PAIRS_DIR}/${name}_${language}.pdf`, {
+    const enPdfText = await getTextFromPdf(`${PAIRS_DIR}/${name}_en.pdf`, {
       pageByPage: true,
     });
+    const targetPdfText = await getTextFromPdf(
+      `${PAIRS_DIR}/${name}_${language}.pdf`,
+      {
+        pageByPage: true,
+      }
+    );
 
     if (!enPdfText || !targetPdfText) {
       console.error(`Failed to read PDF pair: ${name}`);
@@ -118,7 +129,11 @@ async function processPairs(pairFiles: PairFile[], language: string) {
 
     const tmxUnits: string[] = [];
 
-    for (let i = 0; i < enPdfText.text.length && i < targetPdfText.text.length; i++) {
+    for (
+      let i = 0;
+      i < enPdfText.text.length && i < targetPdfText.text.length;
+      i++
+    ) {
       const enPage = (enPdfText.text[i] as PageText).text;
       const targetPage = (targetPdfText.text[i] as PageText).text;
 
@@ -131,14 +146,20 @@ async function processPairs(pairFiles: PairFile[], language: string) {
       const count = enPage.split(".").length + enPage.split(":").length;
       const translationPhrases: any = []; // [['source','target']]
       const sampleTranslation = IloveWater[language];
-      let phrasePrompt = TranslationPhraseGeneratorPrompt.replace("{language}", language)
+      let phrasePrompt = TranslationPhraseGeneratorPrompt.replace(
+        "{language}",
+        language
+      )
         .replace("{sample}", sampleTranslation)
         .replace("{count}", count.toString());
       phrasePrompt = `${phrasePrompt}<ENGLISH>${enPage}</ENGLISH><TARGET>${targetPage}</TARGET>`;
 
       console.log("Sending to LLM for phrase matching...");
 
-      const gptExtractedPairString = (await gpt({prompt: phrasePrompt, formatJson: false})) as string;
+      const gptExtractedPairString = (await gpt({
+        prompt: phrasePrompt,
+        formatJson: false,
+      })) as string;
       gptExtractedPairString.split("\n").map((pair: string) => {
         const [source, target] = pair.split("==");
         console.log(source, target);
@@ -150,19 +171,11 @@ async function processPairs(pairFiles: PairFile[], language: string) {
         source = he.escape(source);
         target = he.escape(target);
 
-        tmxUnits.push(
-          `<tu><tuv xml:lang="en"><seg>${source}</seg></tuv><tuv xml:lang="${language}"><seg>${target}</seg></tuv></tu>`
-        );
+        tmxUnits.push(createTUString({ language, source, target }));
       });
     }
 
-    const tmxContent = `<?xml version="1.0" encoding="UTF-8"?>
-      <tmx version="1.4b">
-        <header creationtool="Custom Script" srclang="en" adminlang="en" datatype="plaintext" o-tmf="tmx" segtype="sentence" creationdate="${new Date().toISOString()}"/>
-        <body>
-          ${tmxUnits.join("\n")}
-        </body>
-      </tmx>`;
+    const tmxContent = createTmxContentString({ tmxUnits });
 
     await fs.promises.writeFile(`${OUTPUT_DIR}/${name}.tmx`, tmxContent);
   }
@@ -170,37 +183,48 @@ async function processPairs(pairFiles: PairFile[], language: string) {
 
 async function processSingles(singleFiles: SingleFiles, language: string) {
   for (const file of singleFiles[language] || []) {
-    const pdfText = await getTextFromPdf<false>(`${SINGLES_DIR}/${file}`, { pageByPage: false });
+    const pdfText = await getTextFromPdf<false>(`${SINGLES_DIR}/${file}`, {
+      pageByPage: false,
+    });
 
     if (!pdfText) {
       console.error(`Failed to read PDF: ${file}`);
       continue;
     }
 
-    const translationPrompt = SingleSourceTranslatorPrompt.replace("{language}", language);
-    const baseTranslation = await gpt<string>(
-      { prompt: translationPrompt + "\n\n" + pdfText.text, formatJson: false },
+    const translationPrompt = SingleSourceTranslatorPrompt.replace(
+      "{language}",
+      language
     );
+    const baseTranslation = await gpt<string>({
+      prompt: translationPrompt + "\n\n" + pdfText.text,
+      formatJson: false,
+    });
 
     const sampleTranslation = IloveWater[language];
 
-    const phrasePrompt = TranslationPhraseGeneratorPrompt.replace("{language}", language).replace(
-      "{sample}",
-      sampleTranslation
-    );
+    const phrasePrompt = TranslationPhraseGeneratorPrompt.replace(
+      "{language}",
+      language
+    ).replace("{sample}", sampleTranslation);
 
     let tmxUnits: string[] = [];
     const words = pdfText.text.split(/\s+/);
 
     for (let i = 0; i < words.length; i += 500) {
       const chunk = words.slice(i, i + 500).join(" ");
-      const generatedPhrases = await gpt<string>({ prompt: phrasePrompt + "\n\n" + chunk, formatJson: false});
+      const generatedPhrases = await gpt<string>({
+        prompt: phrasePrompt + "\n\n" + chunk,
+        formatJson: false,
+      });
       tmxUnits = tmxUnits.concat(generatedPhrases.split("\n"));
     }
 
     const tmxContent = tmxUnits
       .map((unit) => {
-        const [enText, targetText] = unit.split(/<=>/).map((text) => text.trim());
+        const [enText, targetText] = unit
+          .split(/<=>/)
+          .map((text) => text.trim());
         return `<tu><tuv xml:lang="en"><seg>${enText}</seg></tuv><tuv xml:lang="${language}"><seg>${targetText}</seg></tuv></tu>`;
       })
       .join("\n");
@@ -209,7 +233,10 @@ async function processSingles(singleFiles: SingleFiles, language: string) {
       `${SINGLES_DIR}/${path.basename(file, ".pdf")}_${language}.txt`,
       baseTranslation
     );
-    await fs.promises.writeFile(`${SINGLES_DIR}/${path.basename(file, ".pdf")}.tmx`, tmxContent);
+    await fs.promises.writeFile(
+      `${SINGLES_DIR}/${path.basename(file, ".pdf")}.tmx`,
+      tmxContent
+    );
   }
 }
 

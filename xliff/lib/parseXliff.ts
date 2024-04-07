@@ -10,7 +10,13 @@
 // };
 
 export type ParsedXliff = {
-  [namespace: string]: Array<{ id: string; source: string; target?: string }>;
+  [namespace: string]: Array<{
+    id: string;
+    source: string;
+    target?: string;
+    sourceLanguage?: string;
+    language?: string;
+  }>;
 };
 
 /**
@@ -58,8 +64,9 @@ export function parseXLIFFContent(xliffString: string): ParsedXliff {
 
   // Regular expression to find each <trans-unit> block, capturing its 'id' and <source> content
   // This regex accounts for variability in attributes and their order
+  // also get <target...  and the value of lang
   const transUnitRegex =
-    /<trans-unit\s+id="([^"]+)"[\s\S]*?<source(?:\s+xml:lang="[^"]+")?>([\s\S]*?)<\/source>/g;
+    /<trans-unit\s+id="([^"]+)"[\s\S]*?<source(?:\s+xml:lang="([^"]+)")?>([\s\S]*?)<\/source>[\s\S]*?<target(?:\s+xml:lang="([^"]+)")?>([\s\S]*?)<\/target>[\s\S]*?<\/trans-unit>/g;
 
   let match: RegExpExecArray | null;
   while ((match = transUnitRegex.exec(xliffString)) !== null) {
@@ -68,7 +75,10 @@ export function parseXLIFFContent(xliffString: string): ParsedXliff {
     if (match[2].trim())
       results[fileOriginal].push({
         id: match[1],
-        source: match[2].trim(),
+        sourceLanguage: match[2],
+        language: match[4],
+        source: match[3].trim(),
+        target: match[5].trim(),
       });
   }
 

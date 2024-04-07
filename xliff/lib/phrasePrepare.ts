@@ -7,17 +7,16 @@
  *
  */
 
-import { customAlphabet } from 'nanoid'
-const nanoid = customAlphabet('123456789abcdef', 4)
+import { customAlphabet } from "nanoid";
+const nanoid = customAlphabet("123456789abcdef", 4);
 
 /**
  * !!!!
  * Different LLMs are sensitive to different brackets
  *  gpt3.5 likes < > or [[ ]]
- *  command-r likes 【 】 but hates < > 
+ *  command-r likes 【 】 but hates < >
  */
-export const PLACEHOLDER_BRACKETS = ["【", "】"] // ["【", "】"];
-
+export const PLACEHOLDER_BRACKETS = ["{", "}"]; // ["【", "】"];
 
 interface TagMapping {
   [placeholder: string]: string;
@@ -56,7 +55,6 @@ export function replaceTagsAndStoreMappings(
   // return { text: outputText, map: tagMappings };
   const tagMappings: TagMapping = {};
   let counter = initialCounter;
-
   // Function to process input text and replace tags with placeholders
   function processInputText(inputText: string) {
     let outputText = inputText;
@@ -64,22 +62,78 @@ export function replaceTagsAndStoreMappings(
 
     // Pattern to match an opening tag and capture its name
     const startTagPattern = /<(\w+)[^>]*>/g;
+    // ONE TAG AT A TIME
+    // while ((match = startTagPattern.exec(outputText)) !== null) {
+    //   const tagName = match[1];
+    //   const startIndex = match.index;
+    //   const endTagPattern = new RegExp(`<\/${tagName}>`, "g");
 
+    //   endTagPattern.lastIndex = startTagPattern.lastIndex; // Start searching from the end of the current match
+
+    //   const endMatch = endTagPattern.exec(outputText);
+    //   if (endMatch) {
+    //     const endIndex = endMatch.index + endMatch[0].length;
+    //     const tagContent = outputText.substring(startIndex, endIndex);
+    //     const placeholder = `${PLACEHOLDER_BRACKETS[0]}${counter++}${PLACEHOLDER_BRACKETS[1]}` //`[[${counter++}]]`;
+    //     tagMappings[placeholder] = tagContent;
+
+    //     // Replace the original tag content with the placeholder in the output text
+    //     outputText =
+    //       outputText.substring(0, startIndex) +
+    //       placeholder +
+    //       outputText.substring(endIndex);
+
+    //     // Reset lastIndex since the outputText length has changed
+    //     startTagPattern.lastIndex = startIndex + placeholder.length;
+    //   }
+    // }
+
+    // GROUP TAGS AS ONE
     while ((match = startTagPattern.exec(outputText)) !== null) {
-      const tagName = match[1];
-      const startIndex = match.index;
-      const endTagPattern = new RegExp(`<\/${tagName}>`, "g");
+      let startIndex = match.index;
+      let endIndex;
+      let tagContent;
+      let placeholder = `${PLACEHOLDER_BRACKETS[0]}${counter++}${
+        PLACEHOLDER_BRACKETS[1]
+      }`; // e.g., `[[0]]`
 
-      endTagPattern.lastIndex = startTagPattern.lastIndex; // Start searching from the end of the current match
+      // Identify the end of the current tag
+      let tagName = match[1];
+      let endTagPattern = new RegExp(`<\/${tagName}>`, "g");
+      endTagPattern.lastIndex = startTagPattern.lastIndex;
+      let endMatch = endTagPattern.exec(outputText);
 
-      const endMatch = endTagPattern.exec(outputText);
       if (endMatch) {
-        const endIndex = endMatch.index + endMatch[0].length;
-        const tagContent = outputText.substring(startIndex, endIndex);
-        const placeholder = `${PLACEHOLDER_BRACKETS[0]}${nanoid()}${PLACEHOLDER_BRACKETS[1]}` //`[[${counter++}]]`;
-        tagMappings[placeholder] = tagContent;
+        endIndex = endMatch.index + endMatch[0].length;
+        // Initially, tagContent includes just the current tag
+        tagContent = outputText.substring(startIndex, endIndex);
 
-        // Replace the original tag content with the placeholder in the output text
+        // Look for adjacent tags by checking the substring immediately after the current tag
+        let nextTagMatch;
+        do {
+          let nextStartTagMatch = startTagPattern.exec(outputText);
+          if (nextStartTagMatch && nextStartTagMatch.index === endIndex) {
+            // Found an adjacent tag, now find its end
+            tagName = nextStartTagMatch[1];
+            endTagPattern = new RegExp(`<\/${tagName}>`, "g");
+            endTagPattern.lastIndex = startTagPattern.lastIndex;
+            let nextEndMatch = endTagPattern.exec(outputText);
+            if (nextEndMatch) {
+              endIndex = nextEndMatch.index + nextEndMatch[0].length;
+              // Extend tagContent to include the adjacent tag
+              tagContent += outputText.substring(
+                nextStartTagMatch.index,
+                endIndex
+              );
+            }
+            nextTagMatch = true;
+          } else {
+            nextTagMatch = false;
+          }
+        } while (nextTagMatch);
+
+        // Use the expanded tagContent for replacement and mapping
+        tagMappings[placeholder] = tagContent;
         outputText =
           outputText.substring(0, startIndex) +
           placeholder +

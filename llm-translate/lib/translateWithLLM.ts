@@ -1,38 +1,20 @@
 /**
- * Translate using GPT-3.5
+ * Translate using LLM
  */
 
-import { gpt } from "@/lib/ai/gpt";
-import { cohere } from "@/lib/ai/cohere";
-import { fireworks } from "@/lib/ai/fireworks";
-
+import { escapeCurlys } from "@/lib/ai/utils";
+import { LLMTRanslatorFunction } from "@/lib/llmlist";
 import { languageMap } from "@/lib/mapper";
-import { claude } from "@/lib/ai/anthropic";
-
-/**
- * set the function to use (which LLM) 
- */
-const LLM = process.env.LLM || "gpt3.5"
-
-const LLMTRanslatorFunction = {
-  'gpt3.5': gpt,
-  'cmdr': cohere('cmdr'),
-  'cmdrplus': cohere('cmdrplus'),
-  'h2mixtral': fireworks('h2mixtral'),
-  'mixtral': fireworks('mixtral'),
-  'haiku': claude('haiku'),
-  'sonnet': claude('sonnet'),
-}
+import { LLM } from "@/xliff/config";
 
 export const translateWithLLM = async (text, language, systemPrompt = "") => {
   return LLMTRanslatorFunction[LLM]<string>({
-    prompt: text,
+    prompt: escapeCurlys(text),
     sysPrompt: systemPrompt,
     temperature: 0.3,
     formatJson: false,
     tplData: {
       language: languageMap[language],
-    }
+    },
   });
 };
-
