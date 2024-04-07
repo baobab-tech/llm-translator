@@ -13,13 +13,13 @@ import { mergeXliff } from "./merge";
 import {
   commandLineFolderOrFile,
   commandLineSingleFile,
-  confirmProcess,
 } from "./commandline";
 import { generateXliff } from "./generate";
 import { folderBatch } from "./processFolder";
 import { DATA_FOLDER, LLM } from "./config";
 import { costEstimator, estimateCostFolder } from "@/lib/cost";
 import { TranslateXLIFFPhrasePrompt } from "./lib/prompts";
+import { confirmProcess } from "@/lib/commandLine";
 
 async function main() {
   const { folderOrFile, language } = await commandLineFolderOrFile();
