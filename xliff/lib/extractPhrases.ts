@@ -22,14 +22,21 @@ export const extractPhrases = async (docString: string) => {
   Object.keys(obj).forEach((namespace) => {
     let index = 0; // the tag mapping index
     obj[namespace].forEach((tu) => {
-      const { text, map } = replaceTagsAndStoreMappings(tu.source, index);
+      if(tu.source.trim()) { // don't both extracting empty phrases
+      let { text, map } = replaceTagsAndStoreMappings(tu.source, index);
       index += Object.keys(map).length;
       // store the text, namespace and map into a object
+      
+      // if there are any new lines in the text replace it
+      // @TODO: this is because we batch translate and use newlines in the LLM to split... we should change this but not sure how because doing 1 phrase at a time would cost a huge amount
+      text = text.replace(/\n/g, ' ');
       phrasesForTranslation.push({ namespace, tuId: tu.id, text, map });
       // const translatedPhrase = await translateMe(text, language);
       // tu.target = refillTextWithOriginalTags(translatedPhrase, map);
+      }
     });
   });
+  // console.log("XXX",phrasesForTranslation.length)
   return phrasesForTranslation;
 };
 

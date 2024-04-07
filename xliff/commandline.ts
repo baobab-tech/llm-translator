@@ -2,7 +2,11 @@ import fs from "fs";
 import inquirer from "inquirer";
 import { ACCEPTED_FORMATS_EXT, DATA_FOLDER, LLM } from "./config";
 
-export const commandLine = async () => {
+/**
+ * Command line interaction for a single file, step by step
+ * 
+ */
+export const commandLineSingleFile = async () => {
   const operationChoices = [
     { name: "Generate XLIFF", value: "generate" },
     { name: "Translate XLIFF", value: "translate" },
@@ -24,24 +28,6 @@ export const commandLine = async () => {
     );
   }
 
-  const { language } = await inquirer.prompt([
-    {
-      type: "list",
-      name: "language",
-      message: "Select a target language:",
-      //["en", "fr", "ar", "hi", "ne", "pt"]
-      choices: [
-        { name: "English", value: "en" },
-        { name: "French", value: "fr" },
-        { name: "Arabic", value: "ar" },
-        { name: "Hindi", value: "hi" },
-        { name: "Nepali", value: "ne" },
-        { name: "Portuguese", value: "pt" },
-        { name: "Swahili", value: "sw" },
-      ],
-    },
-  ]);
-
   const files = await fs.promises.readdir(DATA_FOLDER);
   const allowedExt = operation === "generate" ? ACCEPTED_FORMATS_EXT : [".xlf"];
   const limitedFiles = files.filter((file) =>
@@ -61,5 +47,45 @@ export const commandLine = async () => {
     },
   ]);
 
-  return { operation, language, selectedFile };
+  return { operation, selectedFile };
 };
+
+/**
+ * Command line interaction for a single file or batch process
+ *
+ */
+export const commandLineFolderOrFile = async (): Promise<{ folderOrFile: 'file' | 'folder'; language: string }> => {
+
+  const { folderOrFile } = await inquirer.prompt([
+    {
+      type: "list",
+      name: "folderOrFile",
+      message: "Do you want to process a single file or a folder of files?",
+      choices: [
+        { name: "Single File", value: "file" },
+        { name: "Folder", value: "folder" },
+      ],
+    },
+  ]);
+
+  const { language } = await inquirer.prompt([
+    {
+      type: "list",
+      name: "language",
+      message: "Select a target language:",
+      //["en", "fr", "ar", "hi", "ne", "pt"]
+      choices: [
+        { name: "English", value: "en" },
+        { name: "French", value: "fr" },
+        { name: "Arabic", value: "ar" },
+        { name: "Hindi", value: "hi" },
+        { name: "Nepali", value: "ne" },
+        { name: "Portuguese", value: "pt" },
+        { name: "Swahili", value: "sw" },
+      ],
+    },
+  ]);
+
+  return { folderOrFile, language };
+}
+

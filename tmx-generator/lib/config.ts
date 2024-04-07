@@ -1,0 +1,1 @@
+const OUTPUT_DIR = process.env.TMX_OUTPUT_DIR || "tmx-generator/data/output";

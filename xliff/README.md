@@ -4,6 +4,10 @@ This tool is to help with document translation (namely docx, xlsx and pptx) othe
 It uses XLIFF which is a standard old tool that extracts phrases to be used with translation software.
 The difference is that we use a custom XLIFF parser to allow for using an LLM (Large Language Model) to translate the phrases in batches.
 
+## Critical dependancy
+
+⚠️ Currently, we require `tikal` to be installed locally, see below.
+
 ## Tools
 
 This toolset allows for extracting, translating and merging XLIFF files (ie translating docx etc documents)

@@ -12,6 +12,7 @@
     "langchain": "^0.1.30",
     "lodash": "^4.17.21",
     "nanoid": "^5.0.6",
+    "officeparser": "^4.0.8",
     "path": "^0.12.7",
     "pdfjs-dist": "^4.0.379",
     "typescript": "^5.4.3"
