@@ -17,14 +17,14 @@ export const TranslateXLIFFPhrasePrompt = {
 - Do not alter or remove any placeholders during translation.
 
 Examples of a translated phrases:
-1| I love water${L}3${R}${L}4${R}
-2| ${L}5${R}They eat apples
+1| I love water
+2| ${L}3${R}They eat apples${L}4${R}${L}5${R}
 3| The situation is interest${L}6${R}ing
 4| I heard her say "this is${L}7${R} nice"
 
 Becomes:
-1| Ich liebe Wasser${L}3${R}${L}4${R}
-2| ${L}5${R}Die Eier essen Apfel
+1| Ich liebe Wasser
+2| ${L}3${R}Die Eier essen Apfel${L}4${R}${L}5${R}
 3| Die Situation ist interes${L}6${R}sant
 4| Ich habe sie sagen "das ist${L}7${R} nett"
 `) +
@@ -49,3 +49,33 @@ Becomes:
 Now,translate the following phrases to {language}, 1 per line. No explanation.
 `,
 };
+
+
+export const FixPlaceHolderCountPrompt = (source, translation) => `
+You are given a batch of phrases that are translated. But there is an issue with the placeholders count. A placeholder is a number in curly brackets, e.g. {3} or {5}.  Follow these rules:
+- List the placeholders in source and translation and summarize the solution to fix the problem, put that in <thoughts>...</thoughts>
+- Make sure every single placeholder from the SOURCE is in the TRANSLATION by adding or removing them in the right spot in the translation as needed.
+- Keep the lines and order in place. 
+- Give me ONLY the <thoughts> and fixed translation with the fixed placeholders without <TRANSLATION> tags. 
+- Make no other changes to the translation. No comments.
+<SOURCE>
+${source}
+</SOURCE>
+<TRANSLATION>
+${translation}
+</TRANSLATION>
+
+Your output should be:
+<thoughts>
+....
+</thoughts>
+1| ...
+...
+`
+export const outputParsePlaceholderFix = (output) => {
+ // remove any text betwee <thoughts> and </thoughts>
+ let outputWithoutThoughts = output.replace(/<thoughts>(.*)<\/thoughts>/, "");
+ // remove any blank lines
+ outputWithoutThoughts = outputWithoutThoughts.replace(/^\s*[\r\n]/gm, "");
+ return outputWithoutThoughts;
+}
