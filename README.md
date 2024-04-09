@@ -65,7 +65,7 @@ LLM="gpt3.5"
 Here is the list of options: 
 - OpenAI: `gpt3.5`, 
 - Anthropic/Claude-3: `haiku`, `sonnet`, 
-- Cohere: `command-r`, 
+- Cohere: `cmdr`, `cmdrplus` 
 - Open models: `mixtral`, `h2mixtral` (served by Fireworks AI)
 
 ### Why typescript
