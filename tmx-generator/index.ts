@@ -26,15 +26,34 @@ async function main() {
       type: "list",
       name: "fileType",
       message: "Select file type:",
-      choices: ["Pairs", "Singles"],
+      choices: [
+        {
+          name: "Using a target-language file without a source translation ('singles')",
+          value: "Singles",
+        },
+        {
+          name: "Using a source-target translated pair of files ('pairs')",
+          value: "Pairs",
+        },
+      ],
     },
   ]);
 
   const { language } = await inquirer.prompt([
     {
-      type: "input",
+      type: "list",
       name: "language",
-      message: "Enter target language code:",
+      message: "Select a target language:",
+      //["en", "fr", "ar", "hi", "ne", "pt"]
+      choices: [
+        { name: "English", value: "en" },
+        { name: "French", value: "fr" },
+        { name: "Arabic", value: "ar" },
+        { name: "Hindi", value: "hi" },
+        { name: "Nepali", value: "ne" },
+        { name: "Portuguese", value: "pt" },
+        { name: "Swahili", value: "sw" },
+      ],
     },
   ]);
 
@@ -54,22 +73,20 @@ async function main() {
 
     await processPairs(selectedFiles, language);
   } else {
-    const singleFiles = await readSingleFiles();
+    const singleFiles = await readSingleFiles(language);
     const { selectedFiles } = await inquirer.prompt([
       {
         type: "checkbox",
         name: "selectedFiles",
         message: "Select files to process:",
-        choices: Object.entries(singleFiles).map(([lang, files]) => ({
-          name: `${lang} (${files.length} files)`,
-          value: lang,
+        choices: singleFiles.map((file: any) => ({
+          name: file,
+          value: file,
         })),
       },
     ]);
-
-    for (const lang of selectedFiles) {
-      await processSingles(singleFiles, lang);
-    }
+    // console.log(selectedFiles);
+    await processSingles(selectedFiles, language);
   }
 
   console.log("Processing completed.");

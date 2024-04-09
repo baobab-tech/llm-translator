@@ -33,6 +33,8 @@ Depending on which LLM you use,
 
 Setup per [README.md](../README.md#setup)
 
+### ⚠️ Note only the "singles" method is currently working.
+
 1. Place your PDFs in the appropriate directories:
    - For pairs: `data/input/pairs/[name]_en.pdf` and `data/input/pairs/[name]_fr.pdf`
    ⚠️ Make sure the pairs have the same exact name with language code endings
@@ -50,13 +52,15 @@ Setup per [README.md](../README.md#setup)
                   |__ document_fr.pdf
    ```
    
-2. Run the script (it runs `npx tsx index.ts`)
+2. Run the script from root of the package (it runs `npx tsx tmx-generator/index.ts`)
 
    ```bash
-   yarn run gen
+   yarn run tmx
    ```
 
 3. Follow the interactive prompts to select the file type (Pairs or Singles) and the files to process.
+
+4. Outputs are in the outputs folder (default is `data/output `), both a csv (`;` seperated) and a tmx file (v1.4b)
 
 ## Roadmap
 

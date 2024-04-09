@@ -11,6 +11,7 @@ The difference is that we use a custom XLIFF parser to allow for using an LLM (L
 ## Tools
 
 This toolset allows for extracting, translating and merging XLIFF files (ie translating docx etc documents)
+It's command line interactive can do file by file (step by step) or a whole folder.
 
 ## Usage
 

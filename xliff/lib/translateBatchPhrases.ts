@@ -1,5 +1,9 @@
 import { ExtractedPhrase } from "./extractPhrases";
-import { FixPlaceHolderCountPrompt, TranslateXLIFFPhrasePrompt, outputParsePlaceholderFix } from "@/xliff/lib/prompts";
+import {
+  FixPlaceHolderCountPrompt,
+  TranslateXLIFFPhrasePrompt,
+  outputParsePlaceholderFix,
+} from "@/xliff/lib/prompts";
 import {
   PLACEHOLDER_BRACKETS,
   refillTextWithOriginalTags,
@@ -94,14 +98,15 @@ async function translationBatchTask(group, language) {
   let translatedBatchText =
     AI_TRANSLATION_MODE == "off"
       ? batchPhrasesText
-      : await translateWithLLM(
-          batchPhrasesText,
+      : await translateWithLLM({
+          text: batchPhrasesText,
           language,
           // use the prompt that focuses on placeholders or not
-          TranslateXLIFFPhrasePrompt[
-            batchPhrasesText.includes(PLACEHOLDER_BRACKETS[0]) ? "yes" : "no"
-          ]
-        );
+          systemPrompt:
+            TranslateXLIFFPhrasePrompt[
+              batchPhrasesText.includes(PLACEHOLDER_BRACKETS[0]) ? "yes" : "no"
+            ],
+        });
   // Do a sanity check there should be same number of phrases as batch
   // first remove any blank lines from the translated text
   translatedBatchText = translatedBatchText.replace(/^\s*[\r\n]/gm, "");
@@ -116,9 +121,7 @@ async function translationBatchTask(group, language) {
     throw new Error("translated batch length does not match the batch length");
   }
   // Sanity check that there are the same amount of [[id]]
-  if (
-    placeholderCountError(translatedBatchText, batchPhrasesText)
-  ) {
+  if (placeholderCountError(translatedBatchText, batchPhrasesText)) {
     console.error(
       "** Error: translation PLACEHOLDER count does not match, trying to fix..."
       // translatedBatchText,
@@ -126,10 +129,12 @@ async function translationBatchTask(group, language) {
     );
     // throw new Error("translation PLACEHOLDER count does not match");
     // Lets try ask gpt to fix the placeholders
-    translatedBatchText = await gpt({prompt:FixPlaceHolderCountPrompt(batchPhrasesText, translatedBatchText)});
+    translatedBatchText = await gpt({
+      prompt: FixPlaceHolderCountPrompt(batchPhrasesText, translatedBatchText),
+    });
     translatedBatchText = outputParsePlaceholderFix(translatedBatchText);
     // console.log("** Fixed translated batch:", translatedBatchText);
-    if(!placeholderCountError(translatedBatchText, batchPhrasesText)) {
+    if (!placeholderCountError(translatedBatchText, batchPhrasesText)) {
       console.log("** Fixed PLACEHOLDER count matches");
     } else {
       console.error(
@@ -137,7 +142,9 @@ async function translationBatchTask(group, language) {
         translatedBatchText,
         batchPhrasesText
       );
-      throw new Error("translation PLACEHOLDER count does not match even after fixing");
+      throw new Error(
+        "translation PLACEHOLDER count does not match even after fixing"
+      );
     }
   }
 

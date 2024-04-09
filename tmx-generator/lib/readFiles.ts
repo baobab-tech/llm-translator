@@ -14,6 +14,11 @@ export const PAIRS_DIR =
 export const SINGLES_DIR =
   process.env.TMX_INPUT_SINGLES_DIR || "tmx-generator/data/input/singles";
 
+export const OUTPUT_DIR = 
+  process.env.TMX_OUTPUT_DIR || "tmx-generator/data/output";
+
+
+
 export interface PairFile {
   name: string;
   languages: string[]; // array of languages the file exists in
@@ -23,7 +28,9 @@ export interface SingleFiles {
   [lang: string]: string[]; // each language has an array of files in that language
 }
 
-export async function readPairFiles(targetLanguage: string): Promise<PairFile[]> {
+export async function readPairFiles(
+  targetLanguage: string
+): Promise<PairFile[]> {
   const files = await fs.promises.readdir(PAIRS_DIR);
   const pairFiles: PairFile[] = [];
 
@@ -41,19 +48,14 @@ export async function readPairFiles(targetLanguage: string): Promise<PairFile[]>
   return pairFiles.filter((pair) => pair.languages.includes(targetLanguage));
 }
 
-export async function readSingleFiles(): Promise<SingleFiles> {
-  const files = await fs.promises.readdir(SINGLES_DIR);
-  const singleFiles: SingleFiles = {};
+export async function readSingleFiles(lang: string): Promise<string[]> {
+  let files = await fs.promises.readdir(SINGLES_DIR);
+  files = files.filter((file) => file.endsWith(`_${lang}.pdf`));
+  // const singleFiles = [];
 
-  for (const file of files) {
-    const [name, lang] = file.split(/_|\.pdf$/);
-
-    if (!singleFiles[lang]) {
-      singleFiles[lang] = [];
-    }
-
-    singleFiles[lang].push(`${name}_${lang}.pdf`);
-  }
-
-  return singleFiles;
+  // for (const file of files) {
+  //   const [name, lang] = file.split(/_|\.pdf$/);
+  //   singleFiles.push(`${name}_${lang}.pdf`);
+  // }
+  return files;
 }

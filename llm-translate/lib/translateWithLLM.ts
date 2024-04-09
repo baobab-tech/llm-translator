@@ -9,20 +9,31 @@ import { LLM } from "@/xliff/config";
 
 /**
  *  Translaes text using the provided LLM
- * @param text 
- * @param language 
- * @param systemPrompt 
+ * @param text  the text to translate (will be in <human> prompt)
+ * @param language language required if tplData not used
+ * @param systemPrompt
  * @param llm  gpt3.5, haiku, sonnet, cmdr, cmdrplus, h2mixtral, mixtral, etc
- * @returns 
+ * @param tplData values to replace in the prompt in chat mode (ie template {field} variables)
+ * @returns
  */
-export const translateWithLLM = async (text, language, systemPrompt = "", llm = LLM) => {
+export const translateWithLLM = async ({
+  text,
+  language,
+  systemPrompt = "",
+  llm = LLM,
+  tplData,
+}: {
+  text: string;
+  language: string;
+  systemPrompt?: string;
+  llm?: string;
+  tplData?: Record<string, string>;
+}) => {
   return LLMTRanslatorFunction[llm]<string>({
     prompt: escapeCurlys(text),
     sysPrompt: systemPrompt,
     temperature: 0.3,
     formatJson: false,
-    tplData: {
-      language: languageMap[language],
-    },
+    tplData: { ...(tplData || {}), language: languageMap[language] },
   });
 };

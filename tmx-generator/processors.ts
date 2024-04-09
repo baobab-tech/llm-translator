@@ -1,17 +1,29 @@
 import fs from "fs";
 
-import { PAIRS_DIR, PairFile, SINGLES_DIR, SingleFiles } from "./lib/readFiles";
-import { PageText, getTextFromPdf } from "@/lib/parsers/pdf/pdfjs";
 import {
-  SingleSourceTranslatorPrompt,
-  TranslationPhraseGeneratorPrompt,
-} from "./lib/prompts";
-import { IloveWater } from "@/lib/mapper";
+  PAIRS_DIR,
+  PairFile,
+  SINGLES_DIR,
+  OUTPUT_DIR,
+  SingleFiles,
+} from "./lib/readFiles";
+import { PageText, getTextFromPdf } from "@/lib/parsers/pdf/pdfjs";
+import { TranslationPhraseGeneratorPrompt } from "./lib/prompts";
+import { IloveWater, languageMap } from "@/lib/mapper";
 import { TUType, createTmxContentString } from "./lib/createTmxString";
 import { gpt } from "@/lib/ai/gpt";
-import path from "path";
 // import inquirer from "inquirer";
 import he from "he";
+import { translateWithLLM } from "@/llm-translate/lib/translateWithLLM";
+
+//==============================
+const CHUNK_LENGTH_WORDS = 500;
+const PREFERRED_LLM = {
+  fr: "gpt3.5",
+  ar: "haiku",
+  es: "gpt3.5",
+};
+//==============================
 
 export async function processPairs(pairFiles: PairFile[], language: string) {
   console.log(`Processing ${pairFiles.length} pairs...`);
@@ -26,15 +38,15 @@ export async function processPairs(pairFiles: PairFile[], language: string) {
     const tmxPath = `${OUTPUT_DIR}/${name}.tmx`;
     if (await fs.existsSync(tmxPath)) {
       console.log(`TMX for ${name} already exists`);
-    //   const { override } = await inquirer.prompt([
-    //     {
-    //       type: "confirm",
-    //       name: "override",
-    //       message: `Override existing TMX?`,
-    //       default: false,
-    //     },
-    //   ]);
-    //   continue;
+      //   const { override } = await inquirer.prompt([
+      //     {
+      //       type: "confirm",
+      //       name: "override",
+      //       message: `Override existing TMX?`,
+      //       default: false,
+      //     },
+      //   ]);
+      //   continue;
     }
 
     const enPdfText = await getTextFromPdf(`${PAIRS_DIR}/${name}_en.pdf`, {
@@ -106,8 +118,9 @@ export async function processPairs(pairFiles: PairFile[], language: string) {
   }
 }
 
-export async function processSingles(singleFiles: SingleFiles, language: string) {
-  for (const file of singleFiles[language] || []) {
+export async function processSingles(singleFiles: string[], language: string) {
+  for (const fileIdx in singleFiles) {
+    const file = singleFiles[fileIdx];
     const pdfText = await getTextFromPdf<false>(`${SINGLES_DIR}/${file}`, {
       pageByPage: false,
     });
@@ -117,50 +130,65 @@ export async function processSingles(singleFiles: SingleFiles, language: string)
       continue;
     }
 
-    const translationPrompt = SingleSourceTranslatorPrompt.replace(
-      "{language}",
-      language
-    );
-    const baseTranslation = await gpt<string>({
-      prompt: translationPrompt + "\n\n" + pdfText.text,
-      formatJson: false,
-    });
-
     const sampleTranslation = IloveWater[language];
 
-    const phrasePrompt = TranslationPhraseGeneratorPrompt.replace(
-      "{language}",
-      language
-    ).replace("{sample}", sampleTranslation);
-
-    let tmxUnits: string[] = [];
+    const tmxUnits: { source: string; target: string }[] = [];
     const words = pdfText.text.split(/\s+/);
 
-    for (let i = 0; i < words.length; i += 500) {
-      const chunk = words.slice(i, i + 500).join(" ");
-      const generatedPhrases = await gpt<string>({
-        prompt: phrasePrompt + "\n\n" + chunk,
-        formatJson: false,
+    console.log(
+      `Processing ${file}... Generating English => ${languageMap[language]} TMX and CSV files using LLM: ${PREFERRED_LLM[language]}`
+    );
+
+    for (let i = 0; i < words.length; i += CHUNK_LENGTH_WORDS) {
+      const chunk = words.slice(i, i + CHUNK_LENGTH_WORDS).join(" ");
+      const generatedPhrases = await translateWithLLM({
+        text: chunk,
+        language,
+        systemPrompt: TranslationPhraseGeneratorPrompt,
+        llm: PREFERRED_LLM[language],
+        tplData: {
+          count: (CHUNK_LENGTH_WORDS / 15).toFixed(0),
+          sample: sampleTranslation,
+        },
       });
-      tmxUnits = tmxUnits.concat(generatedPhrases.split("\n"));
+      generatedPhrases.split("\n").map((pair) => {
+        if (pair.includes("===")) {
+          const [source, target] = pair.split("===");
+          tmxUnits.push({ source, target });
+        }
+      });
     }
 
-    const tmxContent = tmxUnits
-      .map((unit) => {
-        const [enText, targetText] = unit
-          .split(/<=>/)
-          .map((text) => text.trim());
-        return `<tu><tuv xml:lang="en"><seg>${enText}</seg></tuv><tuv xml:lang="${language}"><seg>${targetText}</seg></tuv></tu>`;
-      })
-      .join("\n");
+    const tmxContent = `<?xml version="1.0" encoding="UTF-8"?>
+    <tmx version="1.4b">
+      <header creationtool="Custom Script" srclang="en" adminlang="en" datatype="plaintext" o-tmf="tmx" segtype="sentence" creationdate="${new Date().toISOString()}"/>
+      <body>
+        ${tmxUnits
+          .map(
+            (pair) =>
+              `<tu><tuv xml:lang="en"><seg>${pair.source.trim()}</seg></tuv><tuv xml:lang="${language}"><seg>${pair.target.trim()}</seg></tuv></tu>`
+          )
+          .join("\n")}
+      </body>
+    </tmx>`;
 
-    await fs.promises.writeFile(
-      `${SINGLES_DIR}/${path.basename(file, ".pdf")}_${language}.txt`,
-      baseTranslation
-    );
-    await fs.promises.writeFile(
-      `${SINGLES_DIR}/${path.basename(file, ".pdf")}.tmx`,
+    await fs.writeFileSync(
+      `${OUTPUT_DIR}/${file}_${PREFERRED_LLM[language]}_${language}.tmx`,
       tmxContent
     );
+
+    const csvContent = tmxUnits
+      .map((pair) => `${pair.source.trim()};${pair.target.trim()}`)
+      .join("\n");
+
+    await fs.writeFileSync(
+      `${OUTPUT_DIR}/${file}_${PREFERRED_LLM[language]}_${language}.csv`,
+      csvContent
+    );
+
+    // await fs.promises.writeFile(
+    //   `${SINGLES_DIR}/${file}_${PREFERRED_LLM[language]}_${language}.txt`,
+    //   baseTranslation
+    // );
   }
 }

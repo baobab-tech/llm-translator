@@ -11,6 +11,6 @@ export const SingleSourceTranslatorPrompt = `You are an expert translator, from 
  * @param language
  * @param sample - translation of "I love water"
  */
-export const TranslationPhraseGeneratorPrompt = `You are an expert translator, and TMX generator. Given the following English and equivalent {language} text, generate at least {count} phrases taking from the english and the {language}. Generate correct and complete sentences. Generate 1 per line english then {language} separated by ==. Nothing else.
+export const TranslationPhraseGeneratorPrompt = `You are an expert translator, and TMX generator. Given the following {language} text, extract {count} phrases and generate correct and complete translations to English. Generate 1 per line: english then {language} separated by ===. Do not number the lines. No explanation or comments.
 For example:
-I love water == {sample}`;
+I love water === {sample}`;
