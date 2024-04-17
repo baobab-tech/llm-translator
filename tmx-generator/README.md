@@ -12,7 +12,7 @@ It translate the target language to english using a good enough LLM
 Depending on the target language, we recommend GPT-3.5-turbo-0125 at least, or Claude-Haiku. Mixtral-8x7b could extract and possible translate more high-resource languages, but don't use any 7b models. Haven't tried with the 30b-70b.
 
 ## Generation
-It then generates a TMX file (v1.4b) for use in translation.
+It then generates both a CSV and TMX file (v1.4b) for use in translation.
 
 ## Costs
 Depending on which LLM you use,
@@ -29,16 +29,17 @@ Depending on which LLM you use,
 - TypeScript
 
 
-## Usage
+# Usage
 
 Setup per [README.md](../README.md#setup)
 
 ### ⚠️ Note only the "singles" method is currently working.
 
-1. Place your PDFs in the appropriate directories:
-   - For pairs: `data/input/pairs/[name]_en.pdf` and `data/input/pairs/[name]_fr.pdf`
+## 1. Place your PDFs in the appropriate directories
+
+### A) I have both the english and the target language files (pairs method)
+   Please then in: `data/input/pairs/[name]_en.pdf` and `data/input/pairs/[name]_fr.pdf`
    ⚠️ Make sure the pairs have the same exact name with language code endings
-   - For single files: `data/input/singles/[name]_[language].pdf`
 
    You can change the folder paths in your `.env` file
 
@@ -51,22 +52,27 @@ Setup per [README.md](../README.md#setup)
                   |__ document_en.pdf
                   |__ document_fr.pdf
    ```
+
+### B) I only have the target language file (singles method)
+   Place it in `data/input/singles/[name]_[language].pdf` where language is the target language.
+
+
    
-2. Run the script from root of the package (it runs `npx tsx tmx-generator/index.ts`)
+## 2. Run the script from root of the package (it runs `npx tsx tmx-generator/index.ts`)
 
    ```bash
    yarn run tmx
    ```
 
-3. Follow the interactive prompts to select the file type (Pairs or Singles) and the files to process.
+## 3. Follow the interactive prompts to select the file type (Pairs or Singles) and the files to process.
 
-4. Outputs are in the outputs folder (default is `data/output `), both a csv (`;` seperated) and a tmx file (v1.4b)
+## 4. Outputs are in the outputs folder (default is `data/output `), both a csv (`;` seperated) and a tmx file (v1.4b)
 
-## Roadmap
+# Roadmap
 
-1. Add support for other file types (e.g., Word documents)
-2. Support other than english as the base language
-3. Add support for other translation engines (e.g., Google Translate) for the "singles" method
+- Add support for other file types (e.g., Word documents)
+- Support other than english as the base language
+- Add support for other translation engines (e.g., Google Translate) for the "singles" method
 
 
 ---
