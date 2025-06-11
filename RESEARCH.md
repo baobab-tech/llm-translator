@@ -1,4 +1,123 @@
-## April 2024
+
+## 2025
+
+- [Déjà Vu: Multilingual LLM Evaluation through the Lens of Machine Translation Evaluation](https://hf.co/papers/2504.11829) - Kreutzer et al. | 16 Apr, 2025
+
+Draws parallels between machine translation evaluation and multilingual large language model evaluation, addressing the lack of comprehensive, scientifically rigorous evaluation practices for generative abilities of mLLMs.
+
+Demonstrates how best practices from MT evaluation can deepen understanding of quality differences between models through targeted experiments across key stages of the generative evaluation pipeline. Identifies essential components for robust meta-evaluation of mLLMs.
+
+The work provides crucial insights by leveraging decades of MT evaluation development to create transparent reporting standards and reliable evaluations for multilingual generative models, ensuring evaluation methods themselves are rigorously assessed.
+
+Distills findings into actionable recommendations for mLLM research and development, offering a systematic framework for evaluating multilingual capabilities that builds on established MT evaluation methodologies.
+
+---
+
+- [Enhancing Multilingual Language Models for Code-Switched Input Data](https://hf.co/papers/2503.07990) - Xie et al. | 11 Mar, 2025
+
+Investigates pre-training Multilingual BERT (mBERT) on code-switched datasets to improve performance on critical NLP tasks including part-of-speech tagging, sentiment analysis, named entity recognition, and language identification.
+
+Uses Spanglish tweets for pre-training and demonstrates that the adapted model outperforms or matches baseline models across given tasks, with most significant improvements seen for parts-of-speech tagging.
+
+Latent analysis reveals more homogeneous English and Spanish embeddings for language identification tasks, providing insights for future modeling work in multilingual contexts where language alternation is common.
+
+Highlights potential for adapting multilingual language models for code-switched input data to enable advanced utility in globalized and multilingual contexts, addressing real-world language use patterns.
+
+---
+
+- [Babel: Open Multilingual Large Language Models Serving Over 90% of Global Speakers](https://hf.co/papers/2503.00865) - Zhao et al. | 2 Mar, 2025
+
+Introduces Babel, an open multilingual LLM covering the top 25 languages by number of speakers, supporting over 90% of the global population and including many languages neglected by other open multilingual LLMs.
+
+Unlike traditional continue pretraining approaches, Babel expands its parameter count through a layer extension technique that elevates performance ceiling. Two variants are presented: Babel-9B for efficient inference and Babel-83B setting new standards.
+
+Extensive evaluations on multilingual tasks demonstrate superior performance compared to open LLMs of comparable size. Using open-source supervised fine-tuning datasets, Babel-9B-Chat leads among 10B-sized LLMs.
+
+Babel-83B-Chat sets new standards for multilingual tasks, reaching performance levels comparable to commercial models while maintaining open-source accessibility for the research community.
+
+---
+
+- [Cross-Lingual Transfer for Low-Resource Natural Language Processing](https://hf.co/papers/2502.02722) - García-Ferrero | 4 Feb, 2025
+
+Comprehensive thesis addressing cross-lingual transfer learning for low-resource NLP, focusing on sequence labeling tasks such as Named Entity Recognition, Opinion Target Extraction, and Argument Mining through novel methodological approaches.
+
+Introduces T-Projection, a state-of-the-art annotation projection method leveraging text-to-text multilingual models and machine translation systems that significantly outperforms previous annotation projection methods by wide margins.
+
+Develops a constrained decoding algorithm enhancing cross-lingual sequence labeling in zero-shot settings using text-to-text models, and creates Medical mT5, the first multilingual text-to-text medical model.
+
+Demonstrates practical impact through real-world applications while creating open-source resources that facilitate future research in low-resource NLP, advancing both data-based and model-based transfer learning approaches.
+
+---
+
+
+- [WMT24++: Expanding the Language Coverage of WMT24 to 55 Languages & Dialects](https://hf.co/papers/2502.12404) - Deutsch et al. | 18 Feb, 2025
+
+Extends the WMT24 dataset to cover 55 languages by collecting new human-written references and post-edits for 46 new languages and dialects. The dataset covers four domains: literary, news, social, and speech.
+
+Benchmarks various MT providers and LLMs on the collected dataset using automatic metrics, finding that LLMs are the best-performing MT systems across all 55 languages. The work addresses the need for comprehensive multilingual evaluation frameworks.
+
+The extended dataset provides crucial benchmarking capabilities for assessing LLM performance in diverse linguistic environments, particularly for low-resource languages that are typically underrepresented in existing evaluation frameworks.
+
+Results demonstrate the superior performance of LLMs over traditional MT systems, though the authors recommend future human-based evaluation to confirm these findings across the expanded language coverage.
+
+---
+
+- [Multilingual Machine Translation with Open Large Language Models at Practical Scale: An Empirical Study](https://hf.co/papers/2502.02481) - Cui et al. | 4 Feb, 2025
+
+Systematically explores abilities of open LLMs with less than ten billion parameters for multilingual machine translation tasks, finding that models like Gemma2-9B exhibit impressive multilingual translation capabilities.
+
+Introduces the Parallel-First Monolingual-Second (PFMS) data mixing strategy in continual pretraining to enhance MT performance, presenting GemmaX2-28, a 9B model achieving top-tier performance across 28 languages.
+
+GemmaX2-28 consistently outperforms state-of-the-art models such as TowerInstruct and XALMA, achieving competitive performance with Google Translate and GPT-4-turbo despite having significantly fewer parameters.
+
+The work demonstrates that practical-scale open-source models can achieve commercial-grade translation quality through strategic data mixing and continual pretraining approaches, democratizing access to high-quality multilingual translation.
+
+
+---
+
+- [Analyzing the Effect of Linguistic Similarity on Cross-Lingual Transfer: Tasks and Experimental Setups Matter](https://hf.co/papers/2501.14491) - Blaschke et al. | 24 Jan, 2025
+
+Analyzes cross-lingual transfer for 266 languages from diverse language families across three popular NLP tasks: POS tagging, dependency parsing, and topic classification to understand how linguistic similarity affects transfer performance.
+
+Findings indicate that the effect of linguistic similarity on transfer performance depends on multiple factors: the specific NLP task, the choice between monolingual or multilingual input representations, and the definition of linguistic similarity itself.
+
+Provides comprehensive empirical evidence challenging previous assumptions about cross-lingual transfer by examining a much wider variety of languages and tasks than prior research, which often focused on small language sets.
+
+The work addresses fundamental questions about optimal cross-lingual data selection strategies, providing crucial insights for practitioners working with low-resource languages in diverse linguistic contexts.
+
+These papers represent some of the most recent and significant contributions to machine translation and cross-lingual NLP research from 2025, covering evaluation methodologies, code-switching applications, comprehensive transfer learning analysis, and practical approaches for multilingual model enhancement.
+
+---
+
+
+
+## 2024
+
+---
+
+- [Marco-LLM: Bridging Languages via Massive Multilingual Training for Cross-Lingual Enhancement](https://hf.co/papers/2412.04003) - Ming et al. | 5 Dec, 2024
+
+Addresses LLM limitations with multilingual tasks by introducing Marco-LLM through massive multilingual training for cross-lingual enhancement, collecting substantial multilingual data for low-resource languages and conducting extensive continual pre-training using Qwen2 models.
+
+Demonstrates substantial improvements over state-of-the-art LLMs through comprehensive evaluations on various multilingual benchmarks including MMMLU, AGIEval, Belebele, Flores-200, and XCOPA.
+
+Achieves substantial enhancements in any-to-any machine translation tasks, showing effectiveness in bridging the performance gap between high- and low-resource language capabilities while maintaining strong performance in English and major languages.
+
+Marco-LLM represents a pioneering approach to multilingual LLMs designed to work accurately across various languages, demonstrating dedication to ensuring equitable language representation in large language models.
+
+---
+
+- [MT-Ladder: A Model-Agnostic Framework Boosting LLM-based Machine Translation to the Next Level](https://hf.co/papers/2406.15741) - Feng et al. | 22 Jun, 2024
+
+Develops MT-Ladder, a novel model-agnostic and cost-effective tool to refine the performance of general LLMs for machine translation without requiring unprecedented computing resources or substantial human annotation efforts.
+
+MT-Ladder is trained on pseudo-refinement triplets obtained from existing LLMs without additional human cost, using a hierarchical fine-tuning strategy with an easy-to-hard schema to improve refining performance progressively.
+
+Using Gemma-2B/7B as backbone, MT-Ladder-2B can elevate raw translations to top-tier open-source model levels (refining BigTranslate-13B with +6.91 BLEU and +3.52 COMET for XX-En), while MT-Ladder-7B achieves GPT-4 level performance.
+
+The framework can be seamlessly integrated with any general-purpose LLMs to boost translation performance, providing a practical solution for enhancing existing models without extensive retraining.
+
+---
 
 - [Guiding Large Language Models to Post-Edit Machine Translation with Error Annotations](https://arxiv.org/abs/2404.07851) - Ki & Carpuat | 11 Apr 2024
 
@@ -10,6 +129,7 @@
 
     * Results demonstrate that post-editing MT does not require the largest proprietary LLMs and can be done effectively with smaller open-source models like LLaMA-2. Fine-tuning allows the models to exploit fine-grained feedback more effectively compared to prompting.
     ---
+  
 - [Low-Resource Machine Translation through Retrieval-Augmented LLM Prompting: A Study on the Mambai Language](https://arxiv.org/abs/2404.04809) - Merx et al. | 7 Apr 2024
 
     Introduces a novel corpus for Mambai, a low-resource Austronesian language spoken in Timor-Leste with around 200,000 native speakers, including bilingual English-Mambai dictionaries, 1,187 parallel sentences from a language manual, and 50 parallel sentences translated by a native speaker.
@@ -20,6 +140,20 @@
 
     * Compares open-source and proprietary LLMs (LlaMa 2 70b, Mistral 8x7B, GPT-4) for Mambai translation, with GPT-4 consistently outperforming other models. Provides insights into few-shot LLM prompting for low-resource MT and releases an initial corpus for the Mambai language.
     ---
+
+  
+- [Few-Shot Cross-Lingual Transfer for Prompting Large Language Models in Low-Resource Languages](https://hf.co/papers/2403.06018) - Toukmaji | 9 Mar, 2024
+
+Evaluates methods to adapt LLaMA for prompting in low-resource languages (Kinyarwanda, Hausa, Luganda), considering few-shot prompting, language-adaptive fine-tuning (LAFT), and neural machine translation across multiple tasks.
+
+Finds that despite LAFT's greater computational cost, it's only occasionally optimal for adapting PLMs for prompting, with translate and prompt settings being more compute-efficient and cost-effective for selected low-resource languages.
+
+Results show the prompting method performs better than both translating and LAFT with statistical significance across all tasks and languages when aggregated, challenging assumptions about computational investment and performance outcomes.
+
+The work provides crucial insights for practical deployment of LLMs in low-resource settings, emphasizing efficiency over computational intensity for cross-lingual prompting applications.
+
+---
+
 - [Towards Better Understanding of Cybercrime: The Role of Fine-Tuned LLMs in Translation](https://arxiv.org/abs/2404.01940) - Valeros et al. | 3 Apr 2024
 
     Proposes using fine-tuned Large Language Models (LLMs) to generate high-quality translations of cybercrime communications from Russian to English that are faster, more accurate, cheaper, and able to capture nuances of the language compared to human translators.
